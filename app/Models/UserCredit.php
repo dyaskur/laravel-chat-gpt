@@ -38,5 +38,50 @@ class UserCredit extends Model
 
         return false;
     }
+
+    public function addCredits(int $amount, string $description = 'Manual Credit'): void
+    {
+        $this->increment('credits_available', $amount);
+
+        CreditTransaction::create([
+            'user_id' => $this->user_id,
+            'amount' => $amount,
+            'type' => 'added',
+            'description' => $description
+        ]);
+    }
+
+    public function useCredits(int $amount, string $description = 'Used Credit'): bool
+    {
+        if ($this->credits_available >= $amount) {
+            $this->decrement('credits_available', $amount);
+
+            CreditTransaction::create([
+                'user_id' => $this->user_id,
+                'amount' => -$amount,
+                'type' => 'used',
+                'description' => $description
+            ]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function resetCredits(): void
+    {
+        CreditTransaction::create([
+            'user_id' => $this->user_id,
+            'amount' => -$this->credits_available,
+            'type' => 'reset',
+            'description' => 'Credits reset to default'
+        ]);
+
+        $this->update([
+            'credits_available' => 100,
+            'last_reset' => Carbon::now('GMT')
+        ]);
+    }
 }
 
