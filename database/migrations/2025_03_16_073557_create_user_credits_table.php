@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('user_credits', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('balance')->default(100); // Default credit amount
+            $table->enum('reset_type', ['daily', 'weekly'])->default('daily'); // Reset frequency
+            $table->string('reset_day')->nullable(); // If weekly, store the day (e.g., 'Monday')
+            $table->timestamp('last_reset')->nullable(); // Last reset time
             $table->timestamps();
         });
     }

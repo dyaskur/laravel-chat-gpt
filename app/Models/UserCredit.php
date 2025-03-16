@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserCredit extends Model
 {
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'credits_available', 'reset_type', 'reset_day', 'last_reset'];
+    protected $fillable = ['user_id', 'balance', 'reset_type', 'reset_day', 'last_reset'];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -41,7 +42,7 @@ class UserCredit extends Model
 
     public function addCredits(int $amount, string $description = 'Manual Credit'): void
     {
-        $this->increment('credits_available', $amount);
+        $this->increment('balance', $amount);
 
         CreditTransaction::create([
             'user_id' => $this->user_id,
@@ -53,8 +54,8 @@ class UserCredit extends Model
 
     public function useCredits(int $amount, string $description = 'Used Credit'): bool
     {
-        if ($this->credits_available >= $amount) {
-            $this->decrement('credits_available', $amount);
+        if ($this->balance >= $amount) {
+            $this->decrement('balance', $amount);
 
             CreditTransaction::create([
                 'user_id' => $this->user_id,
@@ -73,13 +74,13 @@ class UserCredit extends Model
     {
         CreditTransaction::create([
             'user_id' => $this->user_id,
-            'amount' => -$this->credits_available,
+            'amount' => -$this->balance,
             'type' => 'reset',
             'description' => 'Credits reset to default'
         ]);
 
         $this->update([
-            'credits_available' => 100,
+            'balance' => 100,
             'last_reset' => Carbon::now('GMT')
         ]);
     }
