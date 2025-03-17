@@ -17,7 +17,13 @@ it('creates a user with initial credits', function () {
         'platform' => 'test_platform',
     ];
 
-    $response = $this->postJson('/api/users', $payload);
+    $headers = [
+        'Accept' => 'application/json',
+        'x-api-key' => config('app.api_key'),
+    ];
+
+
+    $response = $this->postJson('/api/users', $payload, $headers);
 
     $response->assertStatus(201)
         ->assertJsonStructure([
@@ -40,7 +46,13 @@ it('fails to create a user with a duplicate email', function () {
         'platform' => 'test_platform',
     ];
 
-    $response = $this->postJson('/api/users', $payload);
+
+    $headers = [
+        'Accept' => 'application/json',
+        'x-api-key' => config('app.api_key'),
+    ];
+
+    $response = $this->postJson('/api/users', $payload, $headers);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors('email');

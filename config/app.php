@@ -124,5 +124,5 @@ return [
     ],
     'default_credit_available' => 1000,
     'default_credit_type' => 'daily',
-
+    'api_key' => env('INTEGRATION_API_KEY'),
 ];

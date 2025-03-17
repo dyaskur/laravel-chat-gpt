@@ -12,6 +12,9 @@ class UserIntegration extends Model
 
     protected $fillable = ['user_id', 'platform', 'external_id', 'external_email', 'default_model', 'metadata'];
 
+    protected $casts = [
+        'metadata' => 'array',
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
