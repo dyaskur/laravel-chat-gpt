@@ -1,9 +1,9 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
 # Install necessary system packages
-RUN apt-get update && apt-get install -y \
-    nginx zip unzip git curl libpng-dev libonig-dev libxml2-dev \
-    procps libpq-dev \
+RUN apk add --no-cache \
+    nginx zip unzip git curl libpng-dev libxml2-dev libpq-dev \
+    bash oniguruma-dev pkgconf \
     && docker-php-ext-install mbstring exif pcntl bcmath gd pdo_pgsql
 
 # Set working directory
