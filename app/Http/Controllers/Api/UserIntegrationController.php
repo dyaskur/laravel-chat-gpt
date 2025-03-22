@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserIntegrationController extends Controller
 {
@@ -58,7 +59,7 @@ class UserIntegrationController extends Controller
         } catch (\Exception $e) {
             // 🔹 Rollback Transaction if Error Occurs
             DB::rollBack();
-
+            Log::error("User creation failed. Email {$validated['email']} Error: {$e->getMessage()}", $e->getTrace());
             return response()->json(['message' => 'User creation failed', 'error' => $e->getMessage()], 500);
         }
     }
