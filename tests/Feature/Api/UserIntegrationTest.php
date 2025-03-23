@@ -17,10 +17,10 @@ it('creates a user with initial credits', function () {
         'email' => 'john@example.com',
         'platform' => 'test_platform',
     ];
-    Config::set('app.api_key', 'apiKey');
+    Config::set('app.api_key', 'testApiKey');
     $headers = [
         'Accept' => 'application/json',
-        'x-api-key' => 'apiKey',
+        'x-api-key' => 'testApiKey',
     ];
 
 
@@ -46,11 +46,12 @@ it('fails to create a user with a duplicate email', function () {
         'email' => 'john@example.com',
         'platform' => 'test_platform',
     ];
+    Config::set('app.api_key', 'testApiKey');
 
 
     $headers = [
         'Accept' => 'application/json',
-        'x-api-key' => config('app.api_key'),
+        'x-api-key' =>'testApiKey',
     ];
 
     $response = $this->postJson('/api/users', $payload, $headers);
