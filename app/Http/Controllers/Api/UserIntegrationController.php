@@ -55,7 +55,7 @@ class UserIntegrationController extends Controller
             // 🔹 Commit Transaction
             DB::commit();
 
-            return response()->json(['message' => 'User created', 'user' => $user], 201);
+            return response()->json(['message' => 'User created', 'data' => $user], 201);
         } catch (\Exception $e) {
             // 🔹 Rollback Transaction if Error Occurs
             DB::rollBack();

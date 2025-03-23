@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 test('example', function () {
     $response = $this->get('/');
@@ -16,10 +17,10 @@ it('creates a user with initial credits', function () {
         'email' => 'john@example.com',
         'platform' => 'test_platform',
     ];
-
+    Config::set('app.api_key', 'apiKey');
     $headers = [
         'Accept' => 'application/json',
-        'x-api-key' => config('app.api_key'),
+        'x-api-key' => 'apiKey',
     ];
 
 
@@ -28,7 +29,7 @@ it('creates a user with initial credits', function () {
     $response->assertStatus(201)
         ->assertJsonStructure([
             'message',
-            'user' => ['id', 'name', 'email'],
+            'data' => ['id', 'name', 'email'],
         ]);
 
     $user = User::where('email', 'john@example.com')->first();
