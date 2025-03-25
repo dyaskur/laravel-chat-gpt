@@ -22,7 +22,6 @@ class UserIntegrationController extends Controller
             'metadata' => 'array|nullable',
         ]);
 
-
         DB::beginTransaction();
 
         try {
@@ -38,7 +37,6 @@ class UserIntegrationController extends Controller
                 'external_email' => $validated['email'],
                 'metadata' => $validated['metadata'] ?? [],
             ]);
-
 
             $user_credit = $user->credit()->create([
                 'balance' => config('app.default_credit_available') ?? 1000,
@@ -60,6 +58,7 @@ class UserIntegrationController extends Controller
             // 🔹 Rollback Transaction if Error Occurs
             DB::rollBack();
             Log::error("User creation failed. Email {$validated['email']} Error: {$e->getMessage()}", $e->getTrace());
+
             return response()->json(['message' => 'User creation failed', 'error' => $e->getMessage()], 500);
         }
     }

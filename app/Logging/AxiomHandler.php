@@ -2,14 +2,16 @@
 
 namespace App\Logging;
 
+use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Level;
 use Monolog\LogRecord;
-use Monolog\Formatter\FormatterInterface;
+
 class AxiomHandler extends AbstractProcessingHandler
 {
     private string $api_token;
+
     private string $dataset;
 
     public function __construct($level = Level::Debug, bool $bubble = true, $apiToken = null, $dataset = null)
@@ -27,7 +29,7 @@ class AxiomHandler extends AbstractProcessingHandler
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $this->api_token,
+            'Authorization: Bearer '.$this->api_token,
             'Content-Type: application/json',
         ]);
 
@@ -52,7 +54,7 @@ class AxiomHandler extends AbstractProcessingHandler
         curl_exec($ch);
         if (curl_errno($ch)) {
             // Optionally log the curl error to PHP error log
-            error_log('Curl error: ' . curl_error($ch));
+            error_log('Curl error: '.curl_error($ch));
         }
 
         curl_close($ch);
@@ -60,6 +62,6 @@ class AxiomHandler extends AbstractProcessingHandler
 
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new JsonFormatter();
+        return new JsonFormatter;
     }
 }

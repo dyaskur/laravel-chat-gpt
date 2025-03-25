@@ -9,7 +9,6 @@ test('example', function () {
     $response->assertStatus(200);
 });
 
-
 it('creates a user with initial credits', function () {
     $payload = [
         'name' => 'John Doe',
@@ -22,7 +21,6 @@ it('creates a user with initial credits', function () {
         'Accept' => 'application/json',
         'x-api-key' => 'testApiKey',
     ];
-
 
     $response = $this->postJson('/api/users', $payload, $headers);
 
@@ -48,10 +46,9 @@ it('fails to create a user with a duplicate email', function () {
     ];
     Config::set('app.api_key', 'testApiKey');
 
-
     $headers = [
         'Accept' => 'application/json',
-        'x-api-key' =>'testApiKey',
+        'x-api-key' => 'testApiKey',
     ];
 
     $response = $this->postJson('/api/users', $payload, $headers);

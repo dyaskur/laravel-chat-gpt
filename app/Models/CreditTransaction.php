@@ -11,6 +11,7 @@ class CreditTransaction extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'amount', 'type', 'description'];
+
     public $timestamps = false; // Disable timestamps
 
     public function user(): BelongsTo
