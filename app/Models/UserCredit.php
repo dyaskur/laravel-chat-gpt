@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property string $reset_type
+ */
 class UserCredit extends Model
 {
-
     use HasFactory;
 
     protected $fillable = ['user_id', 'balance', 'reset_type', 'reset_day', 'last_reset'];
@@ -17,27 +20,6 @@ class UserCredit extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Determines if the credit should be reset based on reset_type.
-     */
-    public function shouldReset(): bool
-    {
-        $now = Carbon::now('GMT');
-        if (!$this->last_reset) {
-            return true;
-        }
-
-        if ($this->reset_type === 'daily') {
-            return $now->diffInDays($this->last_reset) >= 1;
-        }
-
-        if ($this->reset_type === 'weekly' && $this->reset_day) {
-            return $now->format('l') === $this->reset_day && $now->diffInWeeks($this->last_reset) >= 1;
-        }
-
-        return false;
     }
 
     public function addCredits(int $amount, string $description = 'Manual Credit'): void
@@ -48,7 +30,7 @@ class UserCredit extends Model
             'user_id' => $this->user_id,
             'amount' => $amount,
             'type' => 'added',
-            'description' => $description
+            'description' => $description,
         ]);
     }
 
@@ -61,10 +43,34 @@ class UserCredit extends Model
                 'user_id' => $this->user_id,
                 'amount' => -$amount,
                 'type' => 'used',
-                'description' => $description
+                'description' => $description,
             ]);
 
             return true;
+        }
+
+        return false;
+    }
+
+    public function shouldReset($now = null): bool
+    {
+        if (! $this->last_reset) {
+            return true;
+        }
+
+        if (! $now) {
+            $now = Carbon::now('GMT');
+        }
+
+        // add 8 minutes to compensate for delay
+        $now->addMinutes(8);
+
+        if ($this->reset_type === 'daily') {
+            return $now->diffInDays($this->last_reset) >= 1;
+        }
+
+        if ($this->reset_type === 'weekly') {
+            return $now->diffInWeeks($this->last_reset) >= 1;
         }
 
         return false;
@@ -76,13 +82,21 @@ class UserCredit extends Model
             'user_id' => $this->user_id,
             'amount' => -$this->balance,
             'type' => 'reset',
-            'description' => 'Credits reset to default'
+            'description' => 'Credits reset to default',
         ]);
 
+        $new_balance = 100;
         $this->update([
-            'balance' => 100,
-            'last_reset' => Carbon::now('GMT')
+            'balance' => $new_balance,
+            'last_reset' => Carbon::now('GMT'),
+        ]);
+        Cache::set('credits_'.$this->user_id, $new_balance);
+
+        CreditTransaction::create([
+            'user_id' => $this->user_id,
+            'amount' => $new_balance,
+            'type' => 'added',
+            'description' => 'Credits reset to default',
         ]);
     }
 }
-

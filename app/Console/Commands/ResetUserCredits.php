@@ -2,27 +2,26 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\UserCredit;
-use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class ResetUserCredits extends Command
 {
     protected $signature = 'credits:reset';
+
     protected $description = 'Reset user credits daily or weekly at 00:00 GMT';
 
     public function handle(): void
     {
-        $now = Carbon::now('GMT');
-
-        UserCredit::all()->each(function ($userCredit) use ($now) {
-            if ($userCredit->reset_type === 'daily' ||
-                ($userCredit->reset_type === 'weekly' && $now->isSunday())) {
-
-                $userCredit->resetCredits(); // Call the reset method
+        $count = 0;
+        // todo: investigate whether use filter by last reset  and reset type, or keep this, which is more performance
+        UserCredit::all()->each(function (UserCredit $user_credit) use (&$count) {
+            if ($user_credit->shouldReset()) {
+                $count++;
+                $user_credit->resetCredits(); // Call the reset method
             }
         });
 
-        $this->info('User credits have been reset at 00:00 GMT.');
+        $this->info($count.' user credits have been reset at 00:00 GMT.');
     }
 }
