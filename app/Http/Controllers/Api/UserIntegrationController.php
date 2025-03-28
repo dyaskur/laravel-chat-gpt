@@ -20,6 +20,7 @@ class UserIntegrationController extends Controller
             'email' => 'required|email|unique:users,email',
             'platform' => 'required|string',
             'metadata' => 'array|nullable',
+            'space' => 'array|nullable',
         ]);
 
         DB::beginTransaction();
@@ -31,12 +32,23 @@ class UserIntegrationController extends Controller
                 'email' => $validated['email'],
             ]);
 
-            $user->instegrations()->create([
+            $integration = $user->instegrations()->create([
                 'platform' => $validated['platform'],
                 'external_id' => $validated['external_id'],
                 'external_email' => $validated['email'],
                 'metadata' => $validated['metadata'] ?? [],
             ]);
+
+            if (! empty($validated['space'])) {
+                $space_data = [
+                    'space_url' => $validated['space']['spaceUri'],
+                    'display_name' => $validated['space']['displayName'],
+                    'is_thread' => $validated['space']['spaceThreadingState'] === 'THREADED_MESSAGES',
+                    'save_history' => $validated['space']['spaceHistoryState'] === 'HISTORY_ON',
+                    'name' => $validated['space']['name'],
+                ];
+                $integration->googleChatSpaces()->firstOrCreate($space_data);
+            }
 
             $user_credit = $user->credit()->create([
                 'balance' => config('app.default_credit_available') ?? 1000,

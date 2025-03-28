@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserIntegration::class);
     }
+
+    public function googleChatIntegration(): HasOne
+    {
+        return $this->hasOne(UserIntegration::class)->where('platform', 'google_chat');
+    }
 }
