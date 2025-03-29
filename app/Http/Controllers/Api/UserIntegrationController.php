@@ -56,7 +56,7 @@ class UserIntegrationController extends Controller
             ]);
 
             if ($user_credit->balance > 0) {
-                $user->transactions()->create([
+                $user->creditTransactions()->create([
                     'amount' => $user_credit->balance,
                     'type' => 'added',
                     'description' => 'Initial credit balance',

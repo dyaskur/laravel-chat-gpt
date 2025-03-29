@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Paddle\Billable;
 
 class GoogleChatSpace extends Model
 {
-    use HasFactory;
+    use Billable, HasFactory;
 
     protected $fillable = ['name', 'display_name', 'space_url', 'is_thread', 'save_history', 'metadata'];
 
