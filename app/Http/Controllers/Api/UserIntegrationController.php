@@ -24,12 +24,12 @@ class UserIntegrationController extends Controller
         ]);
 
         DB::beginTransaction();
-
         try {
             $user = User::create([
                 'name' => $validated['name'],
                 'password' => '',
                 'email' => $validated['email'],
+                'coin_balance' => config('app.default_credit_available') ?? 10,
             ]);
 
             $integration = $user->instegrations()->create([
@@ -41,23 +41,17 @@ class UserIntegrationController extends Controller
 
             if (! empty($validated['space'])) {
                 $space_data = [
-                    'space_url' => $validated['space']['spaceUri'],
-                    'display_name' => $validated['space']['displayName'],
-                    'is_thread' => $validated['space']['spaceThreadingState'] === 'THREADED_MESSAGES',
-                    'save_history' => $validated['space']['spaceHistoryState'] === 'HISTORY_ON',
-                    'name' => $validated['space']['name'],
+                    'name' => $validated['space']['displayName'],
+                    'integration_id' => $validated['space']['name'],
+                    'integration_name' => 'google_chat',
+                    'integration_metadata' => json_encode($validated['space']),
                 ];
-                $integration->googleChatSpaces()->firstOrCreate($space_data);
+                $user->teams()->firstOrCreate($space_data);
             }
 
-            $user_credit = $user->credit()->create([
-                'balance' => config('app.default_credit_available') ?? 1000,
-                'reset_type' => config('app.default_credit_type') ?? 'daily',
-            ]);
-
-            if ($user_credit->balance > 0) {
+            if ($user->coin_balance > 0) {
                 $user->creditTransactions()->create([
-                    'amount' => $user_credit->balance,
+                    'amount' => $user->coin_balance,
                     'type' => 'added',
                     'description' => 'Initial credit balance',
                 ]);
@@ -71,7 +65,7 @@ class UserIntegrationController extends Controller
             DB::rollBack();
             Log::error("User creation failed. Email {$validated['email']} Error: {$e->getMessage()}", $e->getTrace());
 
-            return response()->json(['message' => 'User creation failed', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'User creation failed', 'error' => $e->getMessage(), 'z' => $e->getTrace()], 500);
         }
     }
 }

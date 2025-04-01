@@ -32,7 +32,7 @@ it('creates a user with initial credits', function () {
 
     $user = User::where('email', 'john@example.com')->first();
     expect($user->name)->toBe('John Doe')
-        ->and($user->credit->balance)->toBe(config('app.default_credit_available'));
+        ->and($user->coin_balance)->toBe(config('app.default_credit_available'));
 });
 
 it('fails to create a user with a duplicate email', function () {

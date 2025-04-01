@@ -26,7 +26,7 @@ class UserCredit extends Model
     {
         $this->increment('balance', $amount);
 
-        CreditTransaction::create([
+        UserCoinTransaction::create([
             'user_id' => $this->user_id,
             'amount' => $amount,
             'type' => 'added',
@@ -39,7 +39,7 @@ class UserCredit extends Model
         if ($this->balance >= $amount) {
             $this->decrement('balance', $amount);
 
-            CreditTransaction::create([
+            UserCoinTransaction::create([
                 'user_id' => $this->user_id,
                 'amount' => -$amount,
                 'type' => 'used',
@@ -78,7 +78,7 @@ class UserCredit extends Model
 
     public function resetCredits(): void
     {
-        CreditTransaction::create([
+        UserCoinTransaction::create([
             'user_id' => $this->user_id,
             'amount' => -$this->balance,
             'type' => 'reset',
@@ -92,11 +92,12 @@ class UserCredit extends Model
         ]);
         Cache::set('credits_'.$this->user_id, $new_balance);
 
-        CreditTransaction::create([
+        UserCoinTransaction::create([
             'user_id' => $this->user_id,
             'amount' => $new_balance,
             'type' => 'added',
             'description' => 'Credits reset to default',
         ]);
+
     }
 }

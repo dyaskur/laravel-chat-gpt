@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Laravel\Paddle\Events\SubscriptionCreated;
@@ -23,6 +24,7 @@ class PaddleWebhookController extends WebhookController
             return;
         }
 
+        /** @var User $billable */
         if (! $billable = $this->findBillable($data['customer_id'])) {
             return;
         }
@@ -46,11 +48,11 @@ class PaddleWebhookController extends WebhookController
 
             $credits = $item['price']['custom_data']['credits'] ?? 0;
 
-            $credits *= $item['quantity'];
+            $credits *= $item['quantity'] ?? 1;
             if (! $credits) {
                 Log::warning('no credits accredited', $payload);
             } else {
-                $billable->credit()->increment('balance', $credits);
+                $billable->increment('coin_balance', $credits);
                 $billable->creditTransactions()->create([
                     'amount' => $credits,
                     'type' => 'added',

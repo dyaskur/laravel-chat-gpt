@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('credit_transactions', function (Blueprint $table) {
+        Schema::create('team_coin_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('amount'); // Positive for credit, negative for debit
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->integer('amount');
             $table->enum('type', ['added', 'used', 'reset', 'refunded']); // Transaction type
             $table->string('description')->nullable(); // Reason for transaction
             $table->timestamp('created_at')->useCurrent();
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('credit_transactions');
+        Schema::dropIfExists('team_coin_transactions');
     }
 };
