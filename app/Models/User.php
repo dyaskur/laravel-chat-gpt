@@ -51,12 +51,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function credit(): HasOne
-    {
-        return $this->hasOne(UserCredit::class);
-    }
-
-    public function creditTransactions(): HasMany
+    public function coinTransactions(): HasMany
     {
         return $this->hasMany(UserCoinTransaction::class);
     }

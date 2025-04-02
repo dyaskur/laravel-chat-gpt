@@ -21,4 +21,9 @@ class Team extends Model
         return $this->belongsToMany(User::class)
             ->withTimestamps();
     }
+
+    public function coinTransactions()
+    {
+        return $this->hasMany(TeamCoinTransaction::class);
+    }
 }

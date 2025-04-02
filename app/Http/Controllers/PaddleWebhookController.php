@@ -53,7 +53,7 @@ class PaddleWebhookController extends WebhookController
                 Log::warning('no credits accredited', $payload);
             } else {
                 $billable->increment('coin_balance', $credits);
-                $billable->creditTransactions()->create([
+                $billable->coinTransactions()->create([
                     'amount' => $credits,
                     'type' => 'added',
                     'description' => 'new subscription',
