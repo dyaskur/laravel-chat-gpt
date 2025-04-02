@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +25,7 @@ class PaddleWebhookController extends WebhookController
             return;
         }
 
-        /** @var User $billable */
+        /** @var User|Team $billable */
         if (! $billable = $this->findBillable($data['customer_id'])) {
             return;
         }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Paddle\Billable;
 
 class Team extends Model
@@ -22,7 +23,7 @@ class Team extends Model
             ->withTimestamps();
     }
 
-    public function coinTransactions()
+    public function coinTransactions(): HasMany
     {
         return $this->hasMany(TeamCoinTransaction::class);
     }
