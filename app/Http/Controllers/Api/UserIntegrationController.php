@@ -25,6 +25,7 @@ class UserIntegrationController extends Controller
 
         DB::beginTransaction();
         try {
+            /** @var User $user */
             $user = User::create([
                 'name' => $validated['name'],
                 'password' => '',
@@ -50,7 +51,7 @@ class UserIntegrationController extends Controller
             }
 
             if ($user->coin_balance > 0) {
-                $user->creditTransactions()->create([
+                $user->coinTransactions()->create([
                     'amount' => $user->coin_balance,
                     'type' => 'added',
                     'description' => 'Initial credit balance',
