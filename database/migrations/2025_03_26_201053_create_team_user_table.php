@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_credits', function (Blueprint $table) {
+        Schema::create('team_user', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('balance')->default(100); // Default credit amount
-            $table->enum('reset_type', ['daily', 'weekly'])->default('daily'); // Reset frequency
-            $table->string('reset_day')->nullable(); // If weekly, store the day (e.g., 'Monday')
-            $table->timestamp('last_reset')->nullable(); // Last reset time
             $table->timestamps();
+            $table->index(['team_id', 'user_id']);
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_credits');
+        Schema::dropIfExists('team_user');
     }
 };

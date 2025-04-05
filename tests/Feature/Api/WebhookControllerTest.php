@@ -9,9 +9,6 @@ function createBillable(string $description = 'taylor', array $options = []): Us
 {
     $user = createUser($description);
 
-    $user->credit()->create([
-        'balance' => 0,
-    ]);
     Cashier::fake([
         'customers*' => [
             'data' => [[
@@ -109,11 +106,11 @@ it('can handle a subscription created event', function () {
         'quantity' => 2,
     ]);
 
-    $this->assertDatabaseHas('user_credits', [
-        'balance' => 200,
+    $this->assertDatabaseHas('users', [
+        'coin_balance' => 200,
     ]);
 
-    $this->assertDatabaseHas('credit_transactions', [
+    $this->assertDatabaseHas('user_coin_transactions', [
         'amount' => 200,
         'type' => 'added',
         'description' => 'new subscription',
@@ -123,4 +120,10 @@ it('can handle a subscription created event', function () {
         return $event->billable->id === $user->id && $event->subscription->paddle_id === 'sub_123456789';
     });
 
+    // repost with the same data
+    $response = $this->postJson('paddle/webhook', $data, [
+        'Paddle-Signature' => $signature,
+    ]);
+    // make sure the subscription is 1, so no duplicate data
+    $this->assertDatabaseCount('subscriptions', 1);
 });

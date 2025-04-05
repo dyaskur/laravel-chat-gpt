@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\CreditTransaction;
 use App\Models\User;
+use App\Models\UserCoinTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<CreditTransaction>
+ * @extends Factory<UserCoinTransaction>
  */
 class CreditTransactionFactory extends Factory
 {
