@@ -31,7 +31,7 @@ class CoinResetService
     {
 
         $now = now()->timezone('UTC')->addMinutes(5);
-        if (! $entity->last_coin_reset || $now->diffInDays($entity->last_coin_reset) >= $interval) {
+        if (! $entity->last_coin_reset || $now->diffInDays($entity->last_coin_reset) <= -$interval) {
             DB::beginTransaction();
             try {
                 $active_subscriptions = $entity->subscriptions()->where('status', 'active')->get();
