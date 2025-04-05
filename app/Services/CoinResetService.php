@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CoinResetService
@@ -31,23 +32,36 @@ class CoinResetService
 
         $now = now()->timezone('UTC')->addMinutes(5);
         if (! $entity->last_coin_reset || $now->diffInDays($entity->last_coin_reset) <= -$interval) {
-            $active_subscriptions = $entity->subscriptions()->where('status', 'active')->get();
-            $entity->coinTransactions()->create([
-                'amount' => -$entity->coin_balance,
-                'type' => 'reset',
-                'description' => 'Credits reset to default',
-            ]);
-            $coin_gains = $this->calculateCoinGains($active_subscriptions);
-            $entity->update([
-                'coin_balance' => $coin_gains,
-                'last_coin_reset' => $now,
-            ]);
+            DB::beginTransaction();
+            try {
+                $active_subscriptions = $entity->subscriptions()->where('status', 'active')->get();
+                $entity->coinTransactions()->create([
+                    'amount' => -$entity->coin_balance,
+                    'type' => 'reset',
+                    'description' => 'Credits reset to default',
+                ]);
+                $coin_gains = $this->calculateCoinGains($active_subscriptions);
+                $entity->update([
+                    'coin_balance' => $coin_gains,
+                    'last_coin_reset' => $now,
+                ]);
 
-            $entity->coinTransactions()->create([
-                'amount' => $coin_gains,
-                'type' => 'added',
-                'description' => 'Credits reset to default',
-            ]);
+                $entity->coinTransactions()->create([
+                    'amount' => $coin_gains,
+                    'type' => 'added',
+                    'description' => 'Credits reset to default',
+                ]);
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Failed to reset coins', [
+                    'entity_id' => $entity->id,
+                    'entity_type' => get_class($entity),
+                    'error' => $e->getMessage(),
+                ]);
+
+                return false;
+            }
 
             return true;
         }
@@ -72,6 +86,6 @@ class CoinResetService
             });
         }
 
-        return config('app.default_credit_available', 10);
+        return config('app.default_coin_available', 10);
     }
 }

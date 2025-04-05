@@ -122,7 +122,6 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-    'default_credit_available' => 1000,
-    'default_credit_type' => 'daily',
+    'default_coin_available' => 1000,
     'api_key' => env('INTEGRATION_API_KEY'),
 ];

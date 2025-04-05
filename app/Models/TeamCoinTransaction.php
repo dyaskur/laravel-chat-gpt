@@ -10,7 +10,7 @@ class TeamCoinTransaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['team_id', 'amount', 'type', 'description'];
+    protected $fillable = ['team_id', 'user_id', 'amount', 'type', 'description'];
 
     public $timestamps = false; // Disable timestamps
 

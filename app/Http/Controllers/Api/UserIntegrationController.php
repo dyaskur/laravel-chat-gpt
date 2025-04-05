@@ -30,7 +30,7 @@ class UserIntegrationController extends Controller
                 'name' => $validated['displayName'] ?? $validated['name'],
                 'password' => '',
                 'email' => $validated['email'],
-                'coin_balance' => config('app.default_credit_available') ?? 10,
+                'coin_balance' => config('app.default_coin_available') ?? 10,
             ]);
 
             $integration = $user->instegrations()->create([

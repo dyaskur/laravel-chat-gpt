@@ -20,10 +20,10 @@ it('resets coins without a previous reset', function () {
 
     expect($this->coinResetService->resetCoins($user, 1))->toBeTrue()
         ->and(UserCoinTransaction::where('user_id', $user->id)->where('amount', -50)->where('type', 'reset')->exists())->toBeTrue()
-        ->and(UserCoinTransaction::where('user_id', $user->id)->where('amount', config('app.default_credit_available', 10))->where('type', 'added')->exists())->toBeTrue();
+        ->and(UserCoinTransaction::where('user_id', $user->id)->where('amount', config('app.default_coin_available', 10))->where('type', 'added')->exists())->toBeTrue();
 
     $user->refresh();
-    expect($user->coin_balance)->toEqual(config('app.default_credit_available', 10));
+    expect($user->coin_balance)->toEqual(config('app.default_coin_available', 10));
 });
 
 it('resets coins with active subscriptions', function () {

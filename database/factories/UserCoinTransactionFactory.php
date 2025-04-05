@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends Factory<UserCoinTransaction>
  */
-class CreditTransactionFactory extends Factory
+class UserCoinTransactionFactory extends Factory
 {
     /**
      * Define the model's default state.

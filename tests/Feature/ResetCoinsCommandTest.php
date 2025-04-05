@@ -9,7 +9,7 @@ it('resets user coins', function () {
 
     Artisan::call('coins:reset user');
 
-    expect(User::first()->coin_balance)->toEqual(config('app.default_credit_available', 10));
+    expect(User::first()->coin_balance)->toEqual(config('app.default_coin_available', 10));
     expect(Artisan::output())->toContain('3 user credits have been reset.');
 });
 
@@ -18,7 +18,7 @@ it('resets team coins', function () {
 
     Artisan::call('coins:reset team');
 
-    expect(Team::first()->coin_balance)->toEqual(config('app.default_credit_available', 10));
+    expect(Team::first()->coin_balance)->toEqual(config('app.default_coin_available', 10));
     expect(Artisan::output())->toContain('2 team credits have been reset.');
 });
 
