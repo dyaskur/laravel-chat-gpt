@@ -34,16 +34,24 @@ class ResetCoins extends Command
             return;
         }
 
-        $count = 0;
-        $model->chunk(100, function ($entities) use (&$count, $interval) {
-            foreach ($entities as $entity) {
-                if ($this->coinResetService->resetCoins($entity, $interval)) {
-                    $count++;
+        $updated = 0;
+        $skipped = 0;
+        try {
+            $model->chunk(100, function ($entities) use (&$updated, &$skipped, $interval) {
+                foreach ($entities as $entity) {
+                    if ($this->coinResetService->resetCoins($entity, $interval)) {
+                        $updated++;
+                    } else {
+                        $skipped++;
+                    }
                 }
-            }
-        });
 
-        $this->info("{$count} {$entityType} credits have been reset.");
+            });
+        } catch (\Exception $e) {
+            $this->error("Error processing reset coins: {$e->getMessage()}");
+        }
+
+        $this->info("{$entityType} credits have been reset. {$updated} successful and {$skipped} skipped");
     }
 
     private function getModel($entityType): ?Builder

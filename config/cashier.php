@@ -48,33 +48,34 @@ return [
                 'yearly' => 'pri_01jqs51jcdkn00j4s4swe9g3fv',
             ],
         ],
-        'team_standard' => [
-            'product_id' => 'xx',
-            'coin' => 450000,
-            'interval' => 'weekly',
-            'prices' => [
-                'monthly' => 'pri_01jqs56dq80cvcc6ywykfyyy75',
-                'yearly' => 'pri_01jqs57q3hmrm425cv464c91aj',
-            ],
-        ],
-        'team_growth' => [
-            'product_id' => 'xx',
-            'coin' => 1000000,
-            'interval' => 'weekly',
-            'prices' => [
-                'monthly' => 'pri_01jqs5d5y4jqpdqce5fzksjtjp',
-                'yearly' => 'pri_01jqs5cbcnc8kpcc4bhvhzcc21',
-            ],
-        ],
-        'team_elite' => [
-            'product_id' => 'xx',
-            'coin' => 200000,
-            'interval' => 'weekly',
-            'prices' => [
-                'monthly' => 'pri_01jqfkd6pkj6r1yw6w7ttvwh3h',
-                'yearly' => 'pri_01jqfkd6pkj6r1yw6w7ttvwh4h',
-            ],
-        ],
+        // Team plans - to be implemented later
+        //        'team_standard' => [
+        //            'product_id' => 'xx', // TODO: Update with actual product ID when available
+        //            'coin' => 450000,
+        //            'interval' => 'weekly',
+        //            'prices' => [
+        //                'monthly' => 'pri_01jqs56dq80cvcc6ywykfyyy75',
+        //                'yearly' => 'pri_01jqs57q3hmrm425cv464c91aj',
+        //            ],
+        //        ],
+        //        'team_growth' => [
+        //            'product_id' => 'xx',
+        //            'coin' => 1000000,
+        //            'interval' => 'weekly',
+        //            'prices' => [
+        //                'monthly' => 'pri_01jqs5d5y4jqpdqce5fzksjtjp',
+        //                'yearly' => 'pri_01jqs5cbcnc8kpcc4bhvhzcc21',
+        //            ],
+        //        ],
+        //        'team_elite' => [
+        //            'product_id' => 'xx',
+        //            'coin' => 200000,
+        //            'interval' => 'weekly',
+        //            'prices' => [
+        //                'monthly' => 'pri_01jqfkd6pkj6r1yw6w7ttvwh3h',
+        //                'yearly' => 'pri_01jqfkd6pkj6r1yw6w7ttvwh4h',
+        //            ],
+        //        ],
     ],
     'paddle' => [
         'public_key' => env('PADDLE_PUBLIC_KEY'),

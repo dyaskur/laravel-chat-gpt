@@ -31,25 +31,26 @@ class CoinResetService
     {
 
         $now = now()->timezone('UTC')->addMinutes(5);
-        if (! $entity->last_coin_reset || $now->diffInDays($entity->last_coin_reset) <= -$interval) {
+        if (! $entity->last_coin_reset || $now->diffInDays($entity->last_coin_reset) >= $interval) {
             DB::beginTransaction();
             try {
                 $active_subscriptions = $entity->subscriptions()->where('status', 'active')->get();
                 $entity->coinTransactions()->create([
                     'amount' => -$entity->coin_balance,
                     'type' => 'reset',
-                    'description' => 'Credits reset to default',
+                    'description' => 'Coins reset',
                 ]);
                 $coin_gains = $this->calculateCoinGains($active_subscriptions);
                 $entity->update([
                     'coin_balance' => $coin_gains,
                     'last_coin_reset' => $now,
                 ]);
+                $has_subscriptions = $active_subscriptions->count() > 0;
 
                 $entity->coinTransactions()->create([
                     'amount' => $coin_gains,
                     'type' => 'added',
-                    'description' => 'Credits reset to default',
+                    'description' => $has_subscriptions ? 'Coins gain from subscriptions' : 'Free coin reset',
                 ]);
                 DB::commit();
             } catch (\Exception $e) {
