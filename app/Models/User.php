@@ -24,6 +24,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'coin_balance',
+        'last_coin_reset',
     ];
 
     /**
@@ -49,14 +51,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function credit(): HasOne
+    public function coinTransactions(): HasMany
     {
-        return $this->hasOne(UserCredit::class);
-    }
-
-    public function creditTransactions(): HasMany
-    {
-        return $this->hasMany(CreditTransaction::class);
+        return $this->hasMany(UserCoinTransaction::class);
     }
 
     public function instegrations(): HasMany
@@ -67,5 +64,11 @@ class User extends Authenticatable
     public function googleChatIntegration(): HasOne
     {
         return $this->hasOne(UserIntegration::class)->where('platform', 'google_chat');
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class)
+            ->withTimestamps();
     }
 }

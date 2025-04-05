@@ -6,15 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserIntegration extends Model
+class UserCoinTransaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'platform', 'external_id', 'external_email', 'default_model', 'metadata'];
+    protected $fillable = ['user_id', 'amount', 'type', 'description'];
 
-    protected $casts = [
-        'metadata' => 'array',
-    ];
+    public $timestamps = false; // Disable timestamps
 
     public function user(): BelongsTo
     {

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('platform'); // e.g., google_chat, slack, discord
-            $table->string('external_id')->unique(); // External user ID in the integration
+            $table->string('external_id'); // External user ID in the integration
             $table->string('external_email')->nullable(); // Email used in the external platform
             $table->string('default_model')->nullable(); // Email used in the external platform
             $table->json('metadata')->nullable(); // Store extra details if needed

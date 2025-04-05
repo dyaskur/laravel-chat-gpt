@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Models\UserCredit;
+use App\Models\UserCoinTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<UserCredit>
+ * @extends Factory<UserCoinTransaction>
  */
-class UserCreditFactory extends Factory
+class UserCoinTransactionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,8 +20,9 @@ class UserCreditFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'balance' => config('app.default_credit_available', 1000),
-            'reset_type' => config('app.default_credit_type', 'daily'),
+            'amount' => $this->faker->numberBetween(100, 1000),
+            'type' => 'added',
+            'description' => 'Test transaction',
         ];
     }
 }
