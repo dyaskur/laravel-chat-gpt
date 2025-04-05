@@ -27,7 +27,7 @@ class UserIntegrationController extends Controller
         try {
             /** @var User $user */
             $user = User::create([
-                'name' => $validated['name'],
+                'name' => $validated['displayName'] ?? $validated['name'],
                 'password' => '',
                 'email' => $validated['email'],
                 'coin_balance' => config('app.default_credit_available') ?? 10,
@@ -66,7 +66,7 @@ class UserIntegrationController extends Controller
             DB::rollBack();
             Log::error("User creation failed. Email {$validated['email']} Error: {$e->getMessage()}", $e->getTrace());
 
-            return response()->json(['message' => 'User creation failed', 'error' => $e->getMessage(), 'z' => $e->getTrace()], 500);
+            return response()->json(['message' => 'User creation failed', 'error' => $e->getMessage()], 500);
         }
     }
 }

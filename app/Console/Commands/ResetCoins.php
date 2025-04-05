@@ -6,6 +6,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Services\CoinResetService;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 
 class ResetCoins extends Command
 {
@@ -45,7 +46,7 @@ class ResetCoins extends Command
         $this->info("{$count} {$entityType} credits have been reset.");
     }
 
-    private function getModel($entityType): ?\Illuminate\Database\Eloquent\Builder
+    private function getModel($entityType): ?Builder
     {
         return match ($entityType) {
             'user' => User::query(),
